@@ -4,7 +4,7 @@ const ctx = canvas.getContext('2d');
 canvas.width = window.innerWidth;
 canvas.height= window.innerHeight;
 let particleArray=[];
-const numberOfParticles = 100;
+const numberOfParticles = 10;
 
 //get mouse position
 const mouse = {
@@ -20,7 +20,7 @@ window.addEventListener('mousemove', function(event) {
 setInterval(function() {
     mouse.x = undefined;
     mouse.y= undefined;
-}, 200);
+}, 1000);
 
 //create particles
 class Particle {
@@ -38,18 +38,18 @@ class Particle {
         ctx.fill();
     }
     update() {
-        this.size-=0.05;
-        if(this.size < 0) {
-            this.x=(mouse.x+ ((Math.random()*20)-10));
-            this.y=(mouse.y+ ((Math.random()*20)-10));
+        this.size-=(Math.random()*0.1); //shrink particle little by litte
+        if(this.size < 0) { //if the particles are smaller than zero, tey'll appear where the mouse is at the mment
+            this.x= Math.random(0, canvas.width)*1000; //interactive
+            this.y= Math.random(canvas.height*4/5, canvas.height)*1000; 
             this.size = (Math.random() * 10) + 2;
-            this.weight = (Math.random() *2)-0.5;
+            this.weight = (Math.random() * 2)-0.5;
         }
-        this.y += this.weight;
-        this.weight += 0.2;
+        this.y -= this.weight/2;//want it to rise
+        this.weight += 0.02; //want it ...to rise faster? //rising should not be accelerated tho
 
-        if((this.y > canvas.height - this.size) && (this.weight > 0.5)) {
-            this.weight *=-0.5; //bounce!
+        if((this.y > canvas.height - this.size) /*&& (this.weight > 0.5)*/) {
+            this.weight /= 0.05; //rise!
         };
     }
 }
@@ -57,7 +57,7 @@ class Particle {
 function init() {
     particleArray=[];
     for(let i =0; i < numberOfParticles; i++) {
-        let x= Math.random() * canvas.height;
+        let x= Math.random() * canvas.width;
         let y = Math.random() * canvas.height;
         let size = (Math.random()* 5) + 2;
         let color = 'black';
